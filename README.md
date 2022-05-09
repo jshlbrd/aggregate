@@ -1,2 +1,2 @@
 # go-aggregate
-Buffer strings, bytes, and JSON objects data in Go!
+Buffer strings, bytes, and JSON objects in Go!
