@@ -37,7 +37,7 @@ func (a *JSON) Reset() {
 }
 
 /*
-Add adds a JSON object to the aggregate payload, returning true if the add succeeded and false if the add failed.
+Add adds a JSON object to the aggregate payload, returning true if the add succeeded and false if the add failed. If an invalid JSON object is added, then an error is returned.
 
 If an add attempt fails and the payload is not empty, then the payload should be retrieved (see Get), the aggregate reset (see Reset), and the failed object should be reattempted.
 

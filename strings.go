@@ -36,22 +36,22 @@ If an add attempt fails and the payload is not empty, then the payload should be
 
 If an add attempt fails and the payload is empty, then the string being added exceeds the configured limits of the aggregate and should not be reattempted.
 */
-func (a *Strings) Add(data string) (bool, error) {
+func (a *Strings) Add(data string) bool {
 	newCount := a.count + 1
 	if newCount > a.maxCount {
-		return false, nil
+		return false
 	}
 
 	newSize := a.size + len(data)
 	if newSize > a.maxSize {
-		return false, nil
+		return false
 	}
 
 	a.payload = append(a.payload, data)
 	a.size = newSize
 	a.count = newCount
 
-	return true, nil
+	return true
 }
 
 // Get returns the aggregate payload.
