@@ -29,9 +29,8 @@ New initializes a new Aggregate with these settings:
 	sizeType:
 		the function used to calculate the size of items added to the Aggregate
 		must be one of:
-			gob (default)
+			len (used with strings and bytes)
 			json
-			unsafe
 */
 func (a *Aggregate) New(maxSize, maxCount int, sizeType string) {
 	a.count, a.size = 0, 0
