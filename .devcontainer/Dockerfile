@@ -1,1 +1,1 @@
-FROM mcr.microsoft.com/vscode/devcontainers/go:1.17
+FROM mcr.microsoft.com/vscode/devcontainers/go:1.16
