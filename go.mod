@@ -1,3 +1,3 @@
-module github.com/jshlbrd/go-aggregate
+module github.com/jshlbrd/aggregate
 
 go 1.16
