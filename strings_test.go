@@ -101,6 +101,37 @@ func TestStringsGet(t *testing.T) {
 	}
 }
 
+func TestStringsReset(t *testing.T) {
+	var tests = []struct {
+		data     []string
+		expected int
+	}{
+		{
+			[]string{
+				"foo",
+				"bar",
+				"baz",
+			},
+			0,
+		},
+	}
+
+	for _, test := range tests {
+		agg := Strings{}
+		agg.New(100, 100)
+
+		for _, data := range test.data {
+			agg.Add(data)
+		}
+
+		agg.Reset()
+		if agg.Size() != test.expected {
+			t.Logf("expected %v, got %v", test.expected, agg.Size())
+			t.Fail()
+		}
+	}
+}
+
 func benchmarkStrings(b *testing.B, data string) {
 	agg := Strings{}
 	agg.New(10000, 10000)

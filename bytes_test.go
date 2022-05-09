@@ -112,6 +112,37 @@ func TestBytesGet(t *testing.T) {
 	}
 }
 
+func TestBytesReset(t *testing.T) {
+	var tests = []struct {
+		data     [][]byte
+		expected int
+	}{
+		{
+			[][]byte{
+				[]byte("foo"),
+				[]byte("bar"),
+				[]byte("baz"),
+			},
+			0,
+		},
+	}
+
+	for _, test := range tests {
+		agg := Bytes{}
+		agg.New(100, 100)
+
+		for _, data := range test.data {
+			agg.Add(data)
+		}
+
+		agg.Reset()
+		if agg.Size() != test.expected {
+			t.Logf("expected %v, got %v", test.expected, agg.Size())
+			t.Fail()
+		}
+	}
+}
+
 func benchmarkBytes(b *testing.B, data []byte) {
 	agg := Bytes{}
 	agg.New(10000, 10000)
