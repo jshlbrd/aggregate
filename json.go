@@ -11,7 +11,7 @@ const InvalidJSON = Error("InvalidJSON")
 type JSON struct {
 	count, maxCount int
 	size, maxSize   int
-	payload         []interface{}
+	items           []interface{}
 }
 
 /*
@@ -27,13 +27,13 @@ func (a *JSON) New(maxSize, maxCount int) {
 	a.maxSize = maxSize
 
 	slice := make([]interface{}, 0, a.maxCount)
-	a.payload = slice
+	a.items = slice
 }
 
 // Reset resets a JSON aggregate to its initialized settings.
 func (a *JSON) Reset() {
 	a.count, a.size = 0, 0
-	a.payload = a.payload[:0]
+	a.items = a.items[:0]
 }
 
 /*
@@ -59,7 +59,7 @@ func (a *JSON) Add(data interface{}) (bool, error) {
 		return false, nil
 	}
 
-	a.payload = append(a.payload, data)
+	a.items = append(a.items, data)
 	a.size = newSize
 	a.count = newCount
 
@@ -68,7 +68,7 @@ func (a *JSON) Add(data interface{}) (bool, error) {
 
 // Get returns the aggregate payload.
 func (a *JSON) Get() []interface{} {
-	return a.payload
+	return a.items
 }
 
 // Count returns the number of JSON objects in the aggregate payload.

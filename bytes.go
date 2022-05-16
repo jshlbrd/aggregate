@@ -4,7 +4,7 @@ package aggregate
 type Bytes struct {
 	count, maxCount int
 	size, maxSize   int
-	payload         [][]byte
+	items           [][]byte
 }
 
 /*
@@ -20,13 +20,13 @@ func (a *Bytes) New(maxSize, maxCount int) {
 	a.maxSize = maxSize
 
 	slice := make([][]byte, 0, a.maxCount)
-	a.payload = slice
+	a.items = slice
 }
 
 // Reset resets a Bytes aggregate to its initialized settings.
 func (a *Bytes) Reset() {
 	a.count, a.size = 0, 0
-	a.payload = a.payload[:0]
+	a.items = a.items[:0]
 }
 
 /*
@@ -47,7 +47,7 @@ func (a *Bytes) Add(data []byte) bool {
 		return false
 	}
 
-	a.payload = append(a.payload, data)
+	a.items = append(a.items, data)
 	a.size = newSize
 	a.count = newCount
 
@@ -56,7 +56,7 @@ func (a *Bytes) Add(data []byte) bool {
 
 // Get returns the aggregate payload.
 func (a *Bytes) Get() [][]byte {
-	return a.payload
+	return a.items
 }
 
 // Count returns the number of strings in the aggregate payload.

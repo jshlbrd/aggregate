@@ -4,7 +4,7 @@ package aggregate
 type Strings struct {
 	count, maxCount int
 	size, maxSize   int
-	payload         []string
+	items           []string
 }
 
 /*
@@ -20,13 +20,13 @@ func (a *Strings) New(maxSize, maxCount int) {
 	a.maxSize = maxSize
 
 	slice := make([]string, 0, a.maxCount)
-	a.payload = slice
+	a.items = slice
 }
 
 // Reset resets a Strings aggregate to its initialized settings.
 func (a *Strings) Reset() {
 	a.count, a.size = 0, 0
-	a.payload = a.payload[:0]
+	a.items = a.items[:0]
 }
 
 /*
@@ -47,7 +47,7 @@ func (a *Strings) Add(data string) bool {
 		return false
 	}
 
-	a.payload = append(a.payload, data)
+	a.items = append(a.items, data)
 	a.size = newSize
 	a.count = newCount
 
@@ -56,7 +56,7 @@ func (a *Strings) Add(data string) bool {
 
 // Get returns the aggregate payload.
 func (a *Strings) Get() []string {
-	return a.payload
+	return a.items
 }
 
 // Count returns the number of strings in the aggregate payload.
