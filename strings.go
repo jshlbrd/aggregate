@@ -9,12 +9,12 @@ type Strings struct {
 
 /*
 New initializes a new Strings aggregate with these settings:
-	maxSize:
-		the maximum size of all strings stored in the aggregate; when this value is reached, no more strings can be added to the payload.
 	maxCount:
 		the maximum number of strings stored in the aggregate; when this value is reached, no more strings can be added to the payload.
+	maxSize:
+		the maximum size of all strings stored in the aggregate; when this value is reached, no more strings can be added to the payload.
 */
-func (a *Strings) New(maxSize, maxCount int) {
+func (a *Strings) New(maxCount, maxSize int) {
 	a.count, a.size = 0, 0
 	a.maxCount = maxCount
 	a.maxSize = maxSize

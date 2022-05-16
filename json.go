@@ -16,12 +16,12 @@ type JSON struct {
 
 /*
 New initializes a new JSON aggregate with these settings:
-	maxSize:
-		the maximum size of all JSON objects stored in the aggregate; when this value is reached, no more objects can be added to the payload.
 	maxCount:
 		the maximum number of JSON objects stored in the aggregate; when this value is reached, no more objects can be added to the payload.
+	maxSize:
+		the maximum size of all JSON objects stored in the aggregate; when this value is reached, no more objects can be added to the payload.
 */
-func (a *JSON) New(maxSize, maxCount int) {
+func (a *JSON) New(maxCount, maxSize int) {
 	a.count, a.size = 0, 0
 	a.maxCount = maxCount
 	a.maxSize = maxSize
