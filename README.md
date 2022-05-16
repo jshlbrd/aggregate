@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// create an aggregate with a maxCount of 2 items and maxSize of 100 bytes
 	agg := aggregate.Strings{}
 	agg.New(2, 10*10)
 
