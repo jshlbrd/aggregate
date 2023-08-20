@@ -2,7 +2,41 @@ package aggregate
 
 import (
 	"testing"
+	"time"
 )
+
+// TestStringsTimeout tests that the timeout is respected by configuring
+// a timeout of 1ms and sleeping for 1ms between each Add() call.
+func TestStringsTimeout(t *testing.T) {
+	var tests = []struct {
+		data     []string
+		expected int
+	}{
+		{
+			[]string{
+				"foo",
+				"bar",
+				"baz",
+			},
+			1,
+		},
+	}
+
+	for _, test := range tests {
+		agg := Strings{}
+		agg.New(100, 100, "1ms")
+
+		for _, data := range test.data {
+			agg.Add(data)
+			time.Sleep(1 * time.Millisecond)
+		}
+
+		if agg.Count() != test.expected {
+			t.Logf("expected %v, got %v", test.expected, agg.Count())
+			t.Fail()
+		}
+	}
+}
 
 func TestStringsCount(t *testing.T) {
 	var tests = []struct {
@@ -21,7 +55,7 @@ func TestStringsCount(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Strings{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -51,7 +85,7 @@ func TestStringsSize(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Strings{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -85,7 +119,7 @@ func TestStringsGet(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Strings{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -118,7 +152,7 @@ func TestStringsReset(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Strings{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -134,7 +168,7 @@ func TestStringsReset(t *testing.T) {
 
 func benchmarkStrings(b *testing.B, data string) {
 	agg := Strings{}
-	agg.New(10000, 10000)
+	agg.New(10000, 10000, "1s")
 
 	for i := 0; i < b.N; i++ {
 		agg.Add(data)

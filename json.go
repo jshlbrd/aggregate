@@ -2,6 +2,7 @@ package aggregate
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // InvalidJSON is returned when an invalid JSON object is added to the aggregate.
@@ -11,7 +12,10 @@ const InvalidJSON = Error("InvalidJSON")
 type JSON struct {
 	count, maxCount int
 	size, maxSize   int
-	items           []interface{}
+	maxDuration     time.Duration
+
+	now   time.Time
+	items []interface{}
 }
 
 /*
@@ -20,19 +24,29 @@ New initializes a new JSON aggregate with these settings:
 		the maximum number of JSON objects stored in the aggregate; when this value is reached, no more objects can be added to the payload.
 	maxSize:
 		the maximum size of all JSON objects stored in the aggregate; when this value is reached, no more objects can be added to the payload.
+	maxDuration:
+		the maximum duration that the aggregate will store JSON objects; when this duration is reached, no more objects can be added to the payload.
 */
-func (a *JSON) New(maxCount, maxSize int) {
+func (a *JSON) New(maxCount, maxSize int, maxDuration string) {
 	a.count, a.size = 0, 0
 	a.maxCount = maxCount
 	a.maxSize = maxSize
 
-	slice := make([]interface{}, 0, a.maxCount)
-	a.items = slice
+	dur, err := time.ParseDuration(maxDuration)
+	if err != nil {
+		panic(err)
+	}
+	a.maxDuration = dur
+
+	a.now = time.Now()
+	a.items = make([]interface{}, 0, a.maxCount)
 }
 
 // Reset resets a JSON aggregate to its initialized settings.
 func (a *JSON) Reset() {
 	a.count, a.size = 0, 0
+
+	a.now = time.Now()
 	a.items = a.items[:0]
 }
 
@@ -59,9 +73,15 @@ func (a *JSON) Add(data interface{}) (bool, error) {
 		return false, nil
 	}
 
-	a.items = append(a.items, data)
+	if time.Since(a.now) > a.maxDuration {
+		return false, nil
+	}
+
 	a.size = newSize
 	a.count = newCount
+
+	a.now = time.Now()
+	a.items = append(a.items, data)
 
 	return true, nil
 }

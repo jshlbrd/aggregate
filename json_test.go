@@ -4,8 +4,56 @@ import (
 	"bytes"
 	"encoding/json"
 	"testing"
+	"time"
 )
 
+// TestJSONTimeout tests that the timeout is respected by configuring
+// a timeout of 1ms and sleeping for 1ms between each Add() call.
+func TestJSONTimeout(t *testing.T) {
+	var tests = []struct {
+		data     []interface{}
+		expected int
+	}{
+		{
+			[]interface{}{
+				struct {
+					Foo string `json:"foo"`
+					Baz int    `json:"baz"`
+					Qux bool   `json:"qux"`
+				}{
+					Foo: "bar",
+					Baz: 1,
+					Qux: true,
+				},
+				struct {
+					Foo string `json:"foo"`
+					Baz int    `json:"baz"`
+					Qux bool   `json:"qux"`
+				}{
+					Foo: "bar",
+					Baz: 100,
+					Qux: false,
+				},
+			},
+			1,
+		},
+	}
+
+	for _, test := range tests {
+		agg := JSON{}
+		agg.New(100, 100, "1ms")
+
+		for _, data := range test.data {
+			agg.Add(data)
+			time.Sleep(1 * time.Millisecond)
+		}
+
+		if agg.Count() != test.expected {
+			t.Logf("expected %v, got %v", test.expected, agg.Count())
+			t.Fail()
+		}
+	}
+}
 func TestJSONCount(t *testing.T) {
 	var tests = []struct {
 		data     []interface{}
@@ -38,7 +86,7 @@ func TestJSONCount(t *testing.T) {
 
 	for _, test := range tests {
 		agg := JSON{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -74,7 +122,7 @@ func TestJSONSize(t *testing.T) {
 
 	for _, test := range tests {
 		agg := JSON{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -122,7 +170,7 @@ func TestJSONGet(t *testing.T) {
 
 	for _, test := range tests {
 		agg := JSON{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -172,7 +220,7 @@ func TestJSONReset(t *testing.T) {
 
 	for _, test := range tests {
 		agg := JSON{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -188,7 +236,7 @@ func TestJSONReset(t *testing.T) {
 
 func benchmarkJSON(b *testing.B, data interface{}) {
 	agg := JSON{}
-	agg.New(10000, 10000)
+	agg.New(10000, 10000, "1s")
 
 	for i := 0; i < b.N; i++ {
 		agg.Add(data)

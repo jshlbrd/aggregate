@@ -3,7 +3,41 @@ package aggregate
 import (
 	"bytes"
 	"testing"
+	"time"
 )
+
+// TestBytesTimeout tests that the timeout is respected by configuring
+// a timeout of 1ms and sleeping for 1ms between each Add() call.
+func TestBytesTimeout(t *testing.T) {
+	var tests = []struct {
+		data     [][]byte
+		expected int
+	}{
+		{
+			[][]byte{
+				[]byte("foo"),
+				[]byte("bar"),
+				[]byte("baz"),
+			},
+			1,
+		},
+	}
+
+	for _, test := range tests {
+		agg := Bytes{}
+		agg.New(100, 100, "1ms")
+
+		for _, data := range test.data {
+			agg.Add(data)
+			time.Sleep(1 * time.Millisecond)
+		}
+
+		if agg.Count() != test.expected {
+			t.Logf("expected %v, got %v", test.expected, agg.Count())
+			t.Fail()
+		}
+	}
+}
 
 func TestBytesCount(t *testing.T) {
 	var tests = []struct {
@@ -22,7 +56,7 @@ func TestBytesCount(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Bytes{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -62,7 +96,7 @@ func TestBytesSize(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Bytes{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -96,7 +130,7 @@ func TestBytesGet(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Bytes{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -129,7 +163,7 @@ func TestBytesReset(t *testing.T) {
 
 	for _, test := range tests {
 		agg := Bytes{}
-		agg.New(100, 100)
+		agg.New(100, 100, "1s")
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -145,7 +179,7 @@ func TestBytesReset(t *testing.T) {
 
 func benchmarkBytes(b *testing.B, data []byte) {
 	agg := Bytes{}
-	agg.New(10000, 10000)
+	agg.New(10000, 10000, "1s")
 
 	for i := 0; i < b.N; i++ {
 		agg.Add(data)
