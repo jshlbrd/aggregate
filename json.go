@@ -27,16 +27,11 @@ New initializes a new JSON aggregate with these settings:
 	maxDuration:
 		the maximum duration that the aggregate will store JSON objects; when this duration is reached, no more objects can be added to the payload.
 */
-func (a *JSON) New(maxCount, maxSize int, maxDuration string) {
+func (a *JSON) New(maxCount, maxSize int, maxDuration time.Duration) {
 	a.count, a.size = 0, 0
 	a.maxCount = maxCount
 	a.maxSize = maxSize
-
-	dur, err := time.ParseDuration(maxDuration)
-	if err != nil {
-		panic(err)
-	}
-	a.maxDuration = dur
+	a.maxDuration = maxDuration
 
 	a.now = time.Now()
 	a.items = make([]interface{}, 0, a.maxCount)

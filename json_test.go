@@ -40,8 +40,14 @@ func TestJSONTimeout(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
+
 		agg := JSON{}
-		agg.New(100, 100, "1ms")
+		agg.New(100, 100, dur)
 
 		for _, data := range test.data {
 			agg.Add(data)
@@ -85,9 +91,14 @@ func TestJSONCount(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := JSON{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := JSON{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -121,9 +132,14 @@ func TestJSONSize(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := JSON{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := JSON{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -169,9 +185,14 @@ func TestJSONGet(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := JSON{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := JSON{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -219,9 +240,14 @@ func TestJSONReset(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := JSON{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := JSON{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -235,8 +261,10 @@ func TestJSONReset(t *testing.T) {
 }
 
 func benchmarkJSON(b *testing.B, data interface{}) {
+	dur, _ := time.ParseDuration("1ms")
+
 	agg := JSON{}
-	agg.New(10000, 10000, "1s")
+	agg.New(10000, 10000, dur)
 
 	for i := 0; i < b.N; i++ {
 		agg.Add(data)

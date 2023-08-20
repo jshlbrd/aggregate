@@ -24,9 +24,14 @@ func TestBytesTimeout(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := Bytes{}
-		agg.New(100, 100, "1ms")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := Bytes{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 			time.Sleep(1 * time.Millisecond)
@@ -55,9 +60,14 @@ func TestBytesCount(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := Bytes{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := Bytes{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -95,9 +105,14 @@ func TestBytesSize(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := Bytes{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := Bytes{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -129,9 +144,14 @@ func TestBytesGet(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := Bytes{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := Bytes{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -162,9 +182,14 @@ func TestBytesReset(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		agg := Bytes{}
-		agg.New(100, 100, "1s")
+		dur, err := time.ParseDuration("1ms")
+		if err != nil {
+			t.Logf("error parsing duration: %v", err)
+			t.Fail()
+		}
 
+		agg := Bytes{}
+		agg.New(100, 100, dur)
 		for _, data := range test.data {
 			agg.Add(data)
 		}
@@ -178,8 +203,10 @@ func TestBytesReset(t *testing.T) {
 }
 
 func benchmarkBytes(b *testing.B, data []byte) {
+	dur, _ := time.ParseDuration("1ms")
+
 	agg := Bytes{}
-	agg.New(10000, 10000, "1s")
+	agg.New(10000, 10000, dur)
 
 	for i := 0; i < b.N; i++ {
 		agg.Add(data)

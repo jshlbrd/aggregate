@@ -21,16 +21,11 @@ New initializes a new Bytes aggregate with these settings:
 	maxDuration:
 		the maximum duration that the aggregate will store bytes; when this duration is reached, no more bytes can be added to the payload.
 */
-func (a *Bytes) New(maxCount, maxSize int, maxDuration string) {
+func (a *Bytes) New(maxCount, maxSize int, maxDuration time.Duration) {
 	a.count, a.size = 0, 0
 	a.maxCount = maxCount
 	a.maxSize = maxSize
-
-	dur, err := time.ParseDuration(maxDuration)
-	if err != nil {
-		panic(err)
-	}
-	a.maxDuration = dur
+	a.maxDuration = maxDuration
 
 	a.now = time.Now()
 	a.items = make([][]byte, 0, a.maxCount)
